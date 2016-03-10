@@ -1,0 +1,183 @@
+! terminal colors ------------------------------------------------------------
+
+
+! Tango scheme from gnome-terminal:
+! *background: #002B36
+!*foreground: #d0d0d3
+!*color0: #000000
+!*color8: #002B36
+!
+!*color1: #CC0000
+!*color9: #EF2929
+!
+!*color2: #4E9A06
+!*color10: #8AE234
+!
+!*color3: #C4A000
+!*color11: #FCE94F
+!
+!*color4: #3465A4
+!*color12: #729FCF
+!
+!*color5: #75507B
+!*color13: #AD7FA8
+!
+!*color6: #06989A
+!*color14: #34E2E2
+!
+!*color7: #D3D7CF
+!*color15: #EEEEEC
+
+
+!!! Stable settings
+!xterm*faceName: Terminus:pixelsize=11
+!*background: !2e3436
+!*foreground: !d0d0d3
+!URxvt*cursorColor:        !d0d0d3
+!URxvt*colorURL:           !8ae234
+!URxvt*underlineColor:     !92659a
+!! tangoesque scheme
+!! Black (not tango) + DarkGrey
+!*color0:  !555555
+!*color8:  !6e706b
+!! DarkRed + Red
+!*color1:  !cc0000
+!*color9:  !ef2929
+!! DarkGreen + Green
+!*color2:  !4e9a06
+!*color10: !8ae234
+!! DarkYellow + Yellow
+!*color3:  !edd400
+!*color11: !fce94f
+!! DarkBlue + Blue
+!*color4:  !3465a4
+!*color12: !729fcf
+!! DarkMagenta + Magenta
+!*color5:  !92659a
+!*color13: !c19fbe
+!!DarkCyan + Cyan (both not tango)
+!*color6:  !07c7ca
+!*color14: !63e9e9
+!! LightGrey + White
+!*color7:  !d3d7cf
+!*color15: !dededc
+!!! End stable settings
+xterm*faceName: Terminus:pixelsize=11
+XTerm*metaSendsEscape: true
+*background: #2e3436
+*foreground: #d0d0d3
+URxvt*cursorColor:        #d0d0d3
+URxvt*colorURL:           #8ae234
+URxvt*underlineColor:     #92659a
+
+URxvt*transparent: true
+URxvt*shading:     70
+
+!URxvt*background: rgba:0046/0052/0054/0500
+! tangoesque scheme
+! Black (not tango) + DarkGrey
+*color0:  #555555
+*color8:  #555753
+! DarkRed + Red
+*color1:  #cc0000
+*color9:  #EF2929
+! DarkGreen + Green
+*color2:  #4E9A06
+*color10: #8AE234
+! DarkYellow + Yellow
+*color3:  #C4A000
+*color11: #FCE94F
+! DarkBlue + Blue
+*color4:  #3465A4
+*color12: #729FCF
+! DarkMagenta + Magenta
+*color5:  #75507B
+*color13: #AD7FA8
+!DarkCyan + Cyan (both not tango)
+*color6:  #06989A
+*color14: #34E2E2
+! LightGrey + White
+*color7:  #D3D7CF
+*color15: #EEEEEC
+
+!*color0:  #555555
+!*color1:  #a40000
+!*color2:  #4E9A06
+!*color3:  #C4A000
+!*color4:  #3465A4
+!*color5:  #75507B
+!*color6:  #07c7ca
+!*color7:  #babdb9
+!*color8:  #555753
+!*color9:  #EF2929
+!*color10: #8AE234
+!*color11: #FCE94F
+!*color12: #729FCF
+!*color13: #AD7FA8
+!*color14: #6ed7cf
+!*color15: #EEEEEC
+
+! Cursor theme
+! xcursor.theme:            Vanilla-DMZ
+
+! URxvt config
+URxvt*termName:           rxvt-unicode
+! URxvt*termName:           xterm
+URxvt*scrollTtyOutput:      false                                                                                                                                                             
+URxvt*scrollWithBuffer:     true                                                                                                                                                              
+URxvt*scrollTtyKeypress:    true
+URxvt.scrollBar:          off
+! URxvt.font:               xft:'Bitstream Vera Sans Mono':size=12
+URxvt*font:     	  xft:Terminus:pixelsize=11:antialias=false
+! URxvt.letterSpace:        -1
+URxvt.internalBorder:     0
+URxvt*selectToClipboard:  true
+URxvt*saveLines:          10000
+
+URxvt.perl-ext-common:    default,matcher,searchable-scrollback,focus-in-out
+URxvt.url-launcher:        /usr/bin/firefox
+URxvt.matcher.button:     1
+
+! for irc
+URxvt*urgentOnBell:	  true
+
+! URxvt.tabbed.tabbar-fg:   8
+! URxvt.tabbed.tabbar-bg:   0
+! URxvt.tabbed.tab-fg:      2
+! URxvt.tabbed.tab-bg:      0
+! URxvt.tabbed.new-button:  no
+! URxvt.tabbed.title:       no
+
+! Tango color palette
+!URxvt*background:         #2e3436
+!URxvt*foreground:         #d0d0d3
+! foreground color for underline
+! line color for underline
+! black dark/light
+!URxvt*color0:             #888888
+!URxvt*color8:             #6e706b
+! red dark/light
+!URxvt*color1:             #cc0000
+!URxvt*color9:             #ef2929
+! green dark/light
+!URxvt*color2:             #4e9a06
+!URxvt*color10:            #8ae234
+! yellow dark/light
+!URxvt*color3:             #edd400
+!URxvt*color11:            #fce94f
+! blue dark/light
+!URxvt*color4:             #3465a4
+!URxvt*color12:            #729fcf
+! magenta dark/light
+!URxvt*color5:             #92659a
+!URxvt*color13:            #c19fbe
+! cyan dark/light
+!URxvt*color6:             #07c7ca
+!URxvt*color14:            #63e9e9
+! white dark/light
+!URxvt*color7:             #d3d7cf
+!URxvt*color15:            #dededc
+
+! xscreensaver
+xscreensaver.fade:        false
+xscreensaver.unfade:      false
