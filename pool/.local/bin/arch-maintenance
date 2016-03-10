@@ -1,0 +1,50 @@
+#!/bin/bash
+
+if [ $# -lt 1 ]; then
+	prog=$(basename $0)
+	echo "Usage: $prog pacnew <path>    To show all .pacnew, .pacsave and .pacorig files in the given path" >&2
+	echo "Usage: $prog pacclean         Cleans up the pacman package cache" >&2
+	echo "Usage: $prog journal          Shows all journal entries with high priority (0..3)" >&2
+	echo "Usage: $prog failed           Shows all systemd services that failed to start" >&2
+	echo "Usage: $prog unneeded         Shows all currently installed but unneeded packages" >&2
+	echo "Usage: $prog edit             Edit this script using $EDITOR" >&2
+	exit 1
+fi
+
+case "$1" in
+	pacnew)
+		if [ $# -lt 2 ]; then
+			echo "Usage: $0 pacnew <path>" >&2
+			exit 1
+		fi
+
+		# Find all .pac files
+		find "$2" -regextype posix-extended -regex ".+\.pac(new|save|orig)"
+		;;
+	
+	journal)
+		# Show journal logs with priority between 0 and 3
+		journalctl -p 0..3 -xn
+		;;
+	
+	failed)
+		# Check for system targets that failed to start
+		systemctl --failed
+		;;
+	
+	unneeded)
+		# Check for no longer needed unofficial packages (aur)
+		pacman -Qm
+		;;
+
+	pacclean)
+		# Remove the pacman package cache
+		paccache -r
+		paccache -ruk0
+		;;
+
+	edit)
+		$EDITOR $0
+		;;
+esac
+

@@ -1,0 +1,10 @@
+#!/bin/bash
+if [ -f app/console ]; then
+	php app/console $@
+elif [ -f bin/console ]; then
+	php bin/console $@
+else
+	echo "This directory seems not to be a symfony application" >&2
+	exit 1
+fi
+

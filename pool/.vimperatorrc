@@ -1,0 +1,5 @@
+map \> :tabm +1<CR>
+map \< :tabm -1<CR>
+noremap gi gi<End>
+set hintchars=wasdqerfyxcv1234
+highlight Hint font-size:120%;color:#fff;background-color:#b00;padding:5px;

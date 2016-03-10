@@ -1,0 +1,263 @@
+#!/bin/bash
+set -e
+
+function usage {
+    cat <<HERE
+Usage: $0
+  add <path>        Moves to given path to the dotfile management
+  remove <which>    Removes the given target from the dotfile management, restoring the original file
+  link <which>      Links only a specific target
+  all               Links all targets
+  targets           List all targets, checking their vitality (warn = link doesn't exist, error = link broken)
+  repair <which>    Repairs a single target (deleting a broken symlink if it exists)
+  repair-all        Repairs all broken symlinks
+HERE
+}
+
+if [ $# -lt 1 ]; then
+    usage
+    exit 1
+fi
+
+cgray="\033[30m"
+cred="\033[31m"
+cgreen="\033[32m"
+cyellow="\033[33m"
+cblue="\033[34m"
+cend="\033[m"
+
+this_script=$(realpath $0)
+dotfiles=$(realpath $(dirname "$this_script"))/pool
+home_prefix_len=`expr length "$HOME"`
+dotfiles_prefix_len=`expr length "$dotfiles"`
+
+
+function log_error {
+    echo -e "$cred ERROR $cgray|$cend  $@" >&2
+}
+
+function log_done {
+    echo -e "$cgreen OK    $cgray|$cend  $@" >&2
+}
+
+function log_info {
+    echo -e "$cblue INFO  $cgray|$cend  $@" >&2
+}
+
+function log_warn {
+    echo -e "$cyellow WARN  $cgray|$cend  $@" >&2
+}
+
+function install_symlink {
+    local file=$1
+    local relative=${file:$dotfiles_prefix_len+1}
+    
+    set +e
+    ln -s "$file" "$HOME/$relative" 2>/dev/null
+    if [ $? -eq 0 ]; then
+        log_done "ln -s $cyellow$file $cred$HOME/$relative$cend"
+    else
+        log_error "ln -s $cyellow$file $cred$HOME/$relative$cend"
+    fi
+    set -e
+}
+
+function install_dir {
+    local dir=$1
+
+    for i in `ls -A1 "$dir"`; do
+        local file="$dir/$i"
+
+        if [ "$file" == "$this_script" ] || [ "$i" == ".git" ]; then
+            # ignore this file
+            continue
+        fi
+
+        if [ -d "$file" ]; then
+            # install directories recursively
+            install_dir "$file"
+        elif [ -f "$file" ]; then
+            if [[ "$file" == *.swp ]] || [[ "$file" == *~ ]]; then
+                # Skip swap files
+                continue
+            fi
+            install_symlink "$file"
+        fi
+    done
+}
+
+function cleanup_directory {
+    local dir=$1
+
+    if [ "$dir" == "$dotfiles" ] || [ "$dir" == "" ]; then
+        return
+    fi
+
+    if [ `ls -A "$dir"` ]; then
+        return
+    fi
+
+    rmdir "$dir"
+    if [ $? -eq 0 ]; then
+        log_done "Deleting empty directory $cyellow$dir$cend"
+    else
+        log_error "rmdir $dir"
+        return
+    fi
+
+    cleanup_directory $(dirname $dir)
+}
+
+function move_dotfile {
+    local file=$1
+    local relative=${file:$dotfiles_prefix_len+1}
+    
+    set +e
+    mv "$file" "$HOME/$relative" 2>/dev/null
+    if [ $? -eq 0 ]; then
+        log_done mv $file $HOME/$relative
+        cleanup_directory $(dirname $file)
+    else
+        log_error mv $file $HOME/$relative
+    fi
+    set -e
+}
+
+function list_targets {
+    local dir=$1
+
+    for i in `ls -A1 "$dir"`; do
+        local file=$dir/$i
+
+        if [ -d "$file" ]; then
+            list_targets "$file"
+        else
+            local relative=${file:$dotfiles_prefix_len+1}
+            local destination=$HOME/$relative
+
+            local l="$relative $cgray$destination$cend"
+
+            if [ ! -L "$destination" ]; then
+                log_warn $l
+            elif [ ! -e "$destination" ]; then
+                log_error $l
+            else
+                log_done $l
+            fi
+        fi
+    done
+}
+
+
+case "$1" in
+add)
+    if [ $# -lt 2 ]; then
+        echo "Usage: $0 add <path>" >&2
+        exit 1
+    fi
+
+    if [ -L "$2" ]; then
+        log_error "File $cyellow$2$cend is already a symlink." >&2
+        exit 2
+    fi
+
+    path=$(realpath "$2")
+    
+    if [ ! -f "$path" ]; then
+        log_error "File $cyellow$path$cend does not exist or is not a file." >&2
+        exit 2
+    fi
+
+    if [ "${path:0:$home_prefix_len}" != "$HOME" ]; then
+        log_error "$cyellow$path$cend is outside of $cyellow$HOME$cend"
+        exit 2
+    fi
+
+    relative=${path:$home_prefix_len+1}
+
+    target=$dotfiles/$relative
+    target_dir=$(dirname "$target")
+
+    if [ ! -d "$target_dir" ]; then
+        if [ -e "$target_dir" ]; then
+            log_error "Requested to create directory $target_dir, but a file with that name already exists."
+            exit 2
+        fi
+
+        mkdir -p $target_dir
+        if [ $? -eq 0 ]; then
+            log_done "Created directory $cyellow$target_dir$cend"
+        else
+            log_error "Failed to create directory $cyellow$target_dir$cend"
+            exit 2
+        fi
+    fi
+
+    
+    mv "$path" "$target"
+    if [ $? -eq 0 ]; then
+        log_done "mv $path $target"
+    else
+        log_error "mv $path $target"
+        exit
+    fi
+
+    install_symlink "$target"
+    
+
+    ;;
+
+remove)
+    if [ $# -lt 2 ]; then
+        echo "Usage: $0 remove <which>" >&2
+        exit 1
+    fi
+    
+    target=$dotfiles/$2
+
+    if [ ! -f "$target" ]; then
+        log_error "Target $cyellow$target$cend does not exist." >&2
+        exit 2
+    fi
+
+    move_dotfile "$target"
+
+    ;;
+
+link)
+    if [ $# -lt 2 ]; then
+        echo "Usage: $0 link <which>" >&2
+        exit 1
+    fi
+
+    target=$dotfiles/$2
+
+    if [ ! -f "$target" ]; then
+        log_error "Target $cyellow$target$cend does not exist." >&2
+        exit 2
+    fi
+    install_symlink $target
+    ;;
+
+all)
+    install_dir "$dotfiles"
+    ;;
+
+targets)
+    list_targets "$dotfiles"
+    ;;
+
+repair)
+    log_error "Sorry, not yet implemented."
+    ;;
+
+repair-all)
+    log_error "Sorry, not yet implemented."
+    ;;
+
+*)
+    usage
+    ;;
+esac
+
+

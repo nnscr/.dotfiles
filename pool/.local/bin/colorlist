@@ -1,0 +1,9 @@
+#!/usr/bin/python3.5
+
+for fg in range(4, 100):
+		for fst in range(4, 48):
+				a = (fst, fg, fst, fg)
+				print("\033[%d;%dm%2d;%-2d\033[0m " % a, end='')
+		print()
+
+	
