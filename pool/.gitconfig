@@ -1,0 +1,11 @@
+[user]
+	name = nnscr
+	email = info@nnscr.de
+[push]
+	default = tracking
+[alias]
+	ci = commit
+	co = checkout
+	s = status -sb
+[merge]
+	tool = vimdiff
