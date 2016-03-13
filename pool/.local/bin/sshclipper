@@ -1,0 +1,55 @@
+#!/bin/bash
+
+set -e
+
+function usage {
+    echo "sshclipper [-p<port>] [-l<user>] <host>"
+}
+
+function missing {
+    echo "Missing $1, please configure ~/.sshclipperrc or pass via arg" >&2
+    usage >&2
+    exit 1
+}
+
+function print_help {
+    usage
+    cat <<HERE
+    -p Sets the port, default is 22
+    -u Sets the user name for ssh login, defaults to $USER
+    
+You can also set these options in ~/.sshclipperrc or via environm variables, example:
+    host=10.0.0.3
+    user=foobar
+    port=2202
+HERE
+    exit
+}
+
+[ -f ~/.sshclipperrc ] && source ~/.sshclipperrc
+
+OPTIND=1
+
+while getopts "p:l:u:h" opt; do
+    case "$opt" in
+        p)   port=$OPTARG ;;
+        u|l) user=$OPTARG ;;
+        h)   print_help ;;
+    esac
+done
+
+shift $((OPTIND-1))
+
+[ $# -ge 1 ] && host=$1
+[ -z "$user" ] && user=$USER
+
+[ -z "$host" ] && missing host
+[ -z "$user" ] && missing user
+[ -z "$port" ] && port=22
+
+echo Host: $host
+echo User: $user
+echo Port: $port
+
+xsel -b | ssh -l$user $host "DISPLAY=:0 xsel -bi"
+

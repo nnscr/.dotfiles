@@ -1,3 +1,5 @@
+" install dependencies: pacman -S vim-airline vim-nerdtree vim-syntastic
+
 syntax on
 " Line numbers
 set number

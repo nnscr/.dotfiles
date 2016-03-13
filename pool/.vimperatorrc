@@ -1,3 +1,4 @@
+set editor=vim-urxvt
 map \> :tabm +1<CR>
 map \< :tabm -1<CR>
 noremap gi gi<End>

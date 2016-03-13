@@ -11,6 +11,9 @@ Usage: $0
   targets           List all targets, checking their vitality (warn = link doesn't exist, error = link broken)
   repair <which>    Repairs a single target (deleting a broken symlink if it exists)
   repair-all        Repairs all broken symlinks
+  link-bin <name>   Creates a symlink to this script with the given name in ~/.local/bin
+  git               Calls git in the .dotfiles directory
+  cd                Starts a new $SHELL in .dotfiles directory (so you can ^d back to your original path)
 HERE
 }
 
@@ -247,12 +250,32 @@ targets)
     list_targets "$dotfiles"
     ;;
 
+link-bin)
+    if [ $# -lt 2 ]; then
+        echo "Usage: $0 link-bin <name>" >&2
+        exit 1
+    fi
+
+    echo ln -s $(realpath $0) $HOME/.local/bin/$2
+    ln -s $(realpath $0) $HOME/.local/bin/$2
+
+    ;;
+
 repair)
     log_error "Sorry, not yet implemented."
     ;;
 
 repair-all)
     log_error "Sorry, not yet implemented."
+    ;;
+
+git)
+    cd $(dirname $(realpath $0))
+    git ${@:2}
+    ;;
+
+cd)
+    $SHELL -c "cd '$(dirname $(realpath $0))' && $SHELL"
     ;;
 
 *)
