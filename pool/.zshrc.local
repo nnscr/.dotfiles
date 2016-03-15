@@ -1,0 +1,13 @@
+alias ls='ls --color=auto'
+alias aur=yaourt
+alias dm=dotmanage
+
+if [[ "$(hostname)" == "nnscr-tower" ]]; then
+    zstyle :prompt:grml:left:items:host pre '%F{yellow}'
+    zstyle :prompt:grml:left:items:host post '%f'
+elif [[ "$(hostname)" == "nnscr-laptop" ]]; then
+    zstyle :prompt:grml:left:items:host pre '%F{blue}'
+    zstyle :prompt:grml:left:items:host post '%f'
+fi
+
+
