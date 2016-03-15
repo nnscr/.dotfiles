@@ -1,5 +1,6 @@
-" install dependencies: pacman -S vim-airline vim-nerdtree vim-syntastic
+" install dependencies: pacman -S vim-airline vim-nerdtree vim-syntastic vim-csv-git
 
+filetype plugin on
 syntax on
 " Line numbers
 set number
@@ -39,4 +40,13 @@ let g:syntastic_check_on_wq = 0
 nmap ,n :NERDTree<cr>
 nnoremap <C-Right> :sbnext<cr>
 nnoremap <C-Left> :sbprevious<cr>
+
+" csv stuff
+let b:csv_arrange_leftalign = 1
+
+aug CSV_Editing
+    au!
+    au BufRead,BufWritePost *.csv :%ArrangeColumn
+    au BufWritePre *csv :%UnArrangeColumn
+aug end
 

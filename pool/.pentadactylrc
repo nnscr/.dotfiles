@@ -1,0 +1,8 @@
+set editor=vim-urxvt
+map \> :tabm +1<CR>
+map \< :tabm -1<CR>
+noremap gi gi<End>
+set hintkeys=wasdqerfyxcv1234
+highlight Hint font-size:100%;color:#fff;background-color:#b00;padding:5px;
+highlight HintImage font-size:100%;color:#fff;background-color:#b00;padding:5px;
+

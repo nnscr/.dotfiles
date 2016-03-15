@@ -1,0 +1,6 @@
+set number
+colorscheme nnscr
+filextype *.jpg,*.png,*.gif feh
+filextype *.pdf evince
+filetype *.html xdg-open
+
