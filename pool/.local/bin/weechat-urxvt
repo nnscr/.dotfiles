@@ -1,0 +1,4 @@
+#!/bin/zsh
+RECV_UNFOCUSED=true
+TERM=rxvt-unicode-256color
+urxvt -e zsh -c weechat-ssh
