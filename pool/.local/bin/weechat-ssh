@@ -1,4 +1,4 @@
 #!/bin/bash
 
-ssh -t nnscr@nnscrpriv "zsh -c 'tmux -Lirc a'"
+ssh -t nnscr@nnscrpriv "zsh -c 'tmux -u -Lirc a'"
 

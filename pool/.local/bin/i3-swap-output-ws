@@ -1,0 +1,112 @@
+#!/usr/bin/python
+# Moves the workspace on the current output to the given output
+# and moves the previous workspace from that output to the current output.
+#
+# Output name can be the output name as seen in xrandr or "left" and "right",
+# which will be a relative position to the currently focused output.
+#
+# You can optionally specify second output that will be used for swapping if
+# you don't want to use the currently focused output.
+#
+# 
+# Usage:
+#   i3-swap-output-ws <target_output> [<current_output>]
+#
+import i3
+import sys
+from pprint import pprint
+
+
+def get_ordered_output_layout():
+    outputs = [output for output in i3.get_outputs() if output["active"]]
+    ordered = []
+    offset = 0
+    for i in outputs:
+        output = list(output for output in outputs if output["rect"]["x"] == offset)[0]
+        offset += output["rect"]["width"]
+        ordered.append(output)
+
+    return ordered
+
+output_layout = get_ordered_output_layout()
+
+
+def get_focused_workspace():
+    for ws in i3.get_workspaces():
+        if ws["focused"]:
+            return ws
+
+
+def get_current_output_name():
+    return get_focused_workspace()["output"]
+
+
+def resolve_relative_output_name(output_name):
+    if output_name not in ("left", "right"):
+        return [output for output in output_layout if output["name"] == output_name][0]
+
+    current_output = get_current_output_name()
+
+    if output_name == "left":
+        previous_output = None
+        for output in output_layout:
+            if not output["active"]:
+                continue
+
+            if output["name"] == current_output:
+                return previous_output or output_layout[-1]
+            else:
+                previous_output = output
+    elif output_name == "right":
+        current_output_found = False
+        for output in output_layout:
+            if not output["active"]:
+                continue
+
+            if current_output_found:
+                return output
+
+            if output["name"] == current_output:
+                current_output_found = True
+
+        return output_layout[0]
+
+
+output1_name = None
+output2_name = None
+
+# Get required parameter, the target output
+try:
+    output1_name = sys.argv[1]
+except IndexError:
+    print("\033[31mPlease specify target output as first parameter.\033[m", file=sys.stderr)
+    exit(1)
+
+# Optional second parameter, the current output
+try:
+    output2_name = sys.argv[2]
+except IndexError:
+    output2_name = get_current_output_name()
+
+print("\033[36mOutput 1:\033[m", output1_name)
+print("\033[36mOutput 2:\033[m", output2_name)
+print("\033[30mResolving...\033[m")
+
+# Resolve names to objects and relative names (left and right)
+output1 = resolve_relative_output_name(output1_name)
+output2 = resolve_relative_output_name(output2_name)
+
+print("\033[36mOutput 1:\033[m %s with workspace %s" % (output1["name"], output1["current_workspace"]))
+print("\033[36mOutput 2:\033[m %s with workspace %s" % (output2["name"], output2["current_workspace"]))
+
+# Get the current workspace so we can change focus to that one at the end
+original_workspace = get_focused_workspace()
+
+i3.workspace(output1["current_workspace"])
+i3.command("move", "workspace to output %s" % output2["name"])
+i3.workspace(output2["current_workspace"])
+i3.command("move", "workspace to output %s" % output1["name"])
+i3.workspace(original_workspace["name"])
+
+
+

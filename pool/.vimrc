@@ -17,6 +17,9 @@ set laststatus=2
 " Enable 256 colors
 set t_Co=256
 
+" For end of line markes with :set list
+hi NonText ctermfg=DarkGray
+
 set switchbuf=usetab
 
 " Airline configuration

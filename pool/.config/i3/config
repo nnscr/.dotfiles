@@ -9,6 +9,9 @@
 # Please see http://i3wm.org/docs/userguide.html for a complete reference!
 
 set $mod Mod4
+set $leftscreen DVI-D-0
+set $middlescreen DVI-I-1
+set $rightscreen DP-1
 
 # 0xF269 firefox
 set $ws1 1:
@@ -93,8 +96,11 @@ bindsym $mod+j focus down
 bindsym $mod+k focus up
 bindsym $mod+l focus right
 
-bindsym $mod+asciicircum focus left
-bindsym $mod+tab focus right
+# unused
+#bindsym $mod+asciicircum focus left
+#bindsym $mod+tab focus right
+
+bindsym $mod+asciicircum exec --no-startup-id xdotool mousemove 9999 9999
 
 # alternatively, you can use the cursor keys:
 bindsym $mod+Shift+Left move left
@@ -134,22 +140,34 @@ bindsym $mod+a focus parent
 bindsym $mod+Shift+a focus child
 
 # move workspace to screen
-bindsym $mod+Shift+x move workspace to output right
-bindsym $mod+x focus output right
+bindsym $mod+Shift+c move workspace to output right
+bindsym $mod+c focus output right
+bindsym $mod+Shift+x move workspace to output left
+bindsym $mod+x focus output left
+
+# swap workspaces
+bindsym $mod+Ctrl+x exec i3-swap-output-ws left
+bindsym $mod+Ctrl+c exec i3-swap-output-ws right
+
+bindsym $mod+Shift+F1 move workspace to output $leftscreen
+bindsym $mod+Shift+F2 move workspace to output $middlescreen
+bindsym $mod+Shift+F3 move workspace to output $rightscreen
+bindsym $mod+F1 focus output $leftscreen
+bindsym $mod+F2 focus output $middlescreen
+bindsym $mod+F3 focus output $rightscreen
 
 # switch monitor setup
 bindsym XF86Display exec /home/philipp/.local/bin/auto-xrandr
 bindsym XF86Calculator exec /usr/bin/gnome-calculator
 
 # scratchpad
-bindsym $mod+ctrl+c move scratchpad
-bindsym $mod+c scratchpad show
+bindsym $mod+Shift+period move scratchpad
+bindsym $mod+period scratchpad show
 
 # alt tab: move to last active workspace
 bindsym Mod1+Tab workspace back_and_forth
 
 # switch to workspace
-#bindsym $mod+1 exec i3-switch-to $ws1 /opt/google/chrome/chrome
 bindsym $mod+1 exec i3-switch-to $ws1 firefox
 bindsym $mod+2 workspace $ws2
 bindsym $mod+3 workspace $ws3
@@ -160,7 +178,7 @@ bindsym $mod+7 workspace $ws7
 bindsym $mod+8 exec i3-switch-to $ws8 thunderbird
 bindsym $mod+9 workspace $ws9
 bindsym $mod+0 workspace $ws10
-bindsym $mod+less exec pidgin-styled ; workspace $ws10
+bindsym $mod+less exec i3-switch-to $ws10 pidgin pidgin-styled
 bindsym $mod+y workspace $ws7
 # i3-switch-to $ws10 pidgin pidgin-styled
 
@@ -177,6 +195,7 @@ bindsym $mod+Shift+7 move container to workspace $ws7
 bindsym $mod+Shift+8 move container to workspace $ws8
 bindsym $mod+Shift+9 move container to workspace $ws9
 bindsym $mod+Shift+0 move container to workspace $ws10
+bindsym $mod+Shift+y move container to workspace $ws7
 bindsym $mod+Shift+less move container to workspace $ws10
 
 # Brightness Up/Down
@@ -199,9 +218,9 @@ bindsym $mod+KP_2 exec --no-startup-id mpc vol -10
 bindsym $mod+KP_5 exec --no-startup-id mpc vol +10
 
 # reload the configuration file
-bindsym $mod+Shift+c reload
+bindsym $mod+Shift+r reload
 # restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
-bindsym $mod+Shift+r restart
+bindsym $mod+Ctrl+Shift+r restart
 # lock screen
 bindsym $mod+Mod1+l exec /home/philipp/.local/bin/screenlock
 # exit i3 (logs you out of your X session)
@@ -249,9 +268,10 @@ bar {
         # status_command i3status
 	# status_command conky -c /home/philipp/.conkyrc
 	#status_command python ~/code/pystatustest.py 2>> ~/code/pystatustest.log
-	status_command python ~/code/pystatustest.py
+	status_command python ~/code/pystatus.py
 	#status_command python ~/code/pystatustestbar.py 2>> ~/code/pystatustestbar.log
-    tray_output primary
+    #status_command i3status
+    tray_output DVI-I-1
 	position top
 	font pango:FontAwesome 10, Terminus 9
     strip_workspace_numbers yes
