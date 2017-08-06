@@ -235,7 +235,7 @@ link)
 
     target=$dotfiles/$2
 
-    if [ ! -f "$target" ]; then
+    if [ ! -f "$target" ] && [ ! - d "$target" ]; then
         log_error "Target $cyellow$target$cend does not exist." >&2
         exit 2
     fi

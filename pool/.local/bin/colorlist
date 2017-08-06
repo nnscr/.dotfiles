@@ -1,4 +1,4 @@
-#!/usr/bin/python3.5
+#!/usr/bin/python3
 
 for fg in range(4, 100):
 		for fst in range(4, 48):

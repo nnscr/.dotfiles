@@ -1,4 +1,10 @@
 #!/bin/bash
+
+if [ "$1" == "cc" ]; then
+    shift
+    set -- "cache:clear" $@
+fi
+
 if [ -f app/console ]; then
 	php app/console $@
 elif [ -f bin/console ]; then
